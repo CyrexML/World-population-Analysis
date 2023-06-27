@@ -316,30 +316,24 @@ fig
 ## Mapa z 2022 roku
 
 ```{r echo=FALSE}
+library(plotly)
 
 df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv")
 
 a <- NULL
 z <- NULL
 for (i in 1:234) {
-  if ((sum((dane$Kraj[i]==df$COUNTRY)==TRUE))==1)
-  {
-    
+  if ((sum((dane$Kraj[i] == df$COUNTRY) == TRUE)) == 1) {
     a <- as.data.frame(rbind(a, c(dane$Kraj[i], dane$`Skrót Nazwy`[i],
-                                  df$COUNTRY[which(dane$Kraj[i]==df$COUNTRY)],
-                                  df$CODE[which(dane$Kraj[i]==df$COUNTRY)], 
+                                  df$COUNTRY[which(dane$Kraj[i] == df$COUNTRY)],
+                                  df$CODE[which(dane$Kraj[i] == df$COUNTRY)], 
                                   dane$`Populacja w Roku 2022`[i])))
-  }
-  else if ((sum((dane$`Skrót Nazwy`[i]==df$CODE)==TRUE))==1)
-  {
+  } else if ((sum((dane$`Skrót Nazwy`[i] == df$CODE) == TRUE)) == 1) {
     a <- as.data.frame(rbind(a, c(dane$Kraj[i], dane$`Skrót Nazwy`[i],
-                                  df$COUNTRY[which(dane$`Skrót Nazwy`[i]==df$CODE)],
-                                  df$CODE[which(dane$`Skrót Nazwy`[i]==df$CODE)],
+                                  df$COUNTRY[which(dane$`Skrót Nazwy`[i] == df$CODE)],
+                                  df$CODE[which(dane$`Skrót Nazwy`[i] == df$CODE)],
                                   dane$`Populacja w Roku 2022`[i])))
-  }
-  else
-  {
-    
+  } else {
     z <- as.data.frame(rbind(z,c(dane$Kraj[i], dane$`Skrót Nazwy`[i])))
   }
 }
@@ -350,13 +344,23 @@ g <- list(
   ),
   showland = TRUE,
   landcolor = toRGB("#e5ecf6"),
-  colorscale="Viridis"
+  colorscale = list(
+    c(0, 0.2, 0.4, 0.6, 0.8, 1),
+    c("rgb(166, 206, 227)", "rgb(31, 120, 180)", "rgb(178, 223, 138)",
+      "rgb(51, 160, 44)", "rgb(251, 154, 153)", "rgb(227, 26, 28)")
+  ),  # Use a different colorscale
+  colorbar = list(
+    tickmode = "array",  # Set the tick mode to "array"
+    tickvals = seq(0, 1, 0.2),  # Increase tick frequency (0.2 interval)
+    ticktext = c("0", "20%", "40%", "60%", "80%", "100%")  # Set tick labels
+  )
 )
 
-fig <- plot_ly(a, type='choropleth', locations=a$V4, z=a$V5, text=a$V1,colorscale="Viridis")
+fig <- plot_ly(a, type = 'choropleth', locations = a$V4, z = a$V5, text = a$V1)
 fig <- fig %>% layout(geo = g)
 
 fig
+
 ```
 
 ## Zmiana liczby ludności na przestrzeni czasu
